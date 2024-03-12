@@ -6,6 +6,7 @@ const qrcode = require('qrcode-terminal');
 const app = express();
 const client = new Client();
 const PORT = 3000;
+const AUTH_TOKEN = 'Dimple999'; // Your authentication token
 
 app.use(bodyParser.json());
 
@@ -19,7 +20,12 @@ client.on('ready', () => {
 });
 
 app.post('/send-message', (req, res) => {
-    const { number, message } = req.body;
+    const { authToken, number, message } = req.body;
+
+    // Check if authToken matches
+    if (authToken !== AUTH_TOKEN) {
+        return res.status(401).json({ error: 'Unauthorized. Invalid token.' });
+    }
 
     if (!number || !message) {
         return res.status(400).json({ error: 'Both number and message are required' });
