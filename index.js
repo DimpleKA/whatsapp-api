@@ -1,7 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { Client } = require('whatsapp-web.js');
-const qrcode = require('qrcode-terminal');
+const qrcode = require('qrcode');
+const fs = require('fs');
 
 const app = express();
 const client = new Client();
@@ -10,9 +11,16 @@ const AUTH_TOKEN = 'Dimple999'; // Your authentication token
 
 app.use(bodyParser.json());
 
-client.on('qr', (qr) => {
-    console.log('QR Code generated! Scan it to login.');
-    qrcode.generate(qr, { small: true });
+client.on('qr', async (qr) => {
+    console.log('QR Code generated!');
+
+    try {
+        // Generate QR code as data URL
+        const qrImage = await qrcode.toFile('./qr.png', qr, { errorCorrectionLevel: 'low' });
+        console.log('QR Code saved as qr.png');
+    } catch (err) {
+        console.error('Error generating QR code:', err);
+    }
 });
 
 client.on('ready', () => {
