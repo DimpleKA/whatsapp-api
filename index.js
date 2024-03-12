@@ -11,6 +11,9 @@ const AUTH_TOKEN = 'Dimple999'; // Your authentication token
 
 app.use(bodyParser.json());
 
+// Serve static files from the 'public' folder
+app.use(express.static('public'));
+
 client.on('qr', async (qr) => {
     console.log('QR Code generated!');
 
@@ -51,6 +54,11 @@ app.post('/send-message', (req, res) => {
 });
 
 client.initialize();
+
+// Serve index.html when the root URL is accessed
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/public/index.html');
+});
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
